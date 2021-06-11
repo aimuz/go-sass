@@ -215,7 +215,7 @@ func TestCompressed(t *testing.T) {
 func compressed(t *testing.T, source string) string {
 	// TODO compressed
 	got, err := CompileString(source, &Options{
-
+		Style: Compressed,
 	})
 	if err != nil {
 		t.Errorf("CompileString() error = %v", err)
