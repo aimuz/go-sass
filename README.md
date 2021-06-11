@@ -1,4 +1,4 @@
-# go-sass
+# go-sass (No use, in progress)
 
 [![License](https://img.shields.io/github/license/aimuz/go-sass)](LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/aimuz/go-sass)](https://goreportcard.com/report/github.com/aimuz/go-sass)
