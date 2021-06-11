@@ -49,7 +49,6 @@ func main() {
 		Use: "sass",
 		Example: "sass <input.scss> [output.css]\n" +
 			"sass [<input.css>:<output.css>] [<input/>:<output/>]",
-
 		Run: func(cmd *cobra.Command, args []string) {
 			if showHelp {
 				_ = cmd.Usage()
@@ -59,7 +58,7 @@ func main() {
 				fmt.Println(version)
 				return
 			}
-			fmt.Println("hello world")
+			panic("TODO sass-cli")
 		},
 	}
 
