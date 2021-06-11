@@ -23,7 +23,10 @@ type Options struct {
 	// LoadPaths ...
 	LoadPaths []string
 
-	// Charset ...
+	// Charset This flag tells Sass never to emit a @charset declaration or a UTF-8 byte-order mark.
+	// By default, or if --charset is passed, Sass will insert either a @charset declaration
+	// (in expanded output mode) or a byte-order mark (in compressed output mode)
+	// if the stylesheet contains any non-ASCII characters.
 	Charset bool
 }
 
