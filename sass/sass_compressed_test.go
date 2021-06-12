@@ -211,20 +211,3 @@ func TestCompressed(t *testing.T) {
 		})
 	})
 }
-
-func compressed(t *testing.T, source string) string {
-	// TODO compressed
-	got, err := CompileString(source, &Options{
-		Style: Compressed,
-	})
-	if err != nil {
-		t.Errorf("CompileString() error = %v", err)
-	}
-	return got
-}
-
-func assert(t *testing.T, got, want string) {
-	if got != want {
-		t.Errorf("got = %v, want %v", got, want)
-	}
-}
