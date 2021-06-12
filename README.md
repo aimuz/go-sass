@@ -4,7 +4,6 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/aimuz/go-sass)](https://goreportcard.com/report/github.com/aimuz/go-sass)
 [![GoDoc](https://pkg.go.dev/badge/github.com/aimuz/go-sass?status.svg)](https://pkg.go.dev/github.com/aimuz/go-sass?tab=doc)
 
-
 A Golang implementation of Sass.
 
 ## Why
