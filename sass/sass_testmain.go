@@ -1,6 +1,15 @@
 package sass
 
-import "testing"
+import (
+	"testing"
+)
+
+func errorMust(t *testing.T, err error) {
+	t.Helper()
+	if err != nil {
+		t.Fatal()
+	}
+}
 
 func compressed(t *testing.T, source string) string {
 	t.Helper()

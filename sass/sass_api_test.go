@@ -1,6 +1,8 @@
 package sass
 
-import "testing"
+import (
+	"testing"
+)
 
 // The test case is from dart:
 // https://github.com/sass/dart-sass/blob/master/test/dart_api_test.dart
