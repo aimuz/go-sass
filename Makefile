@@ -5,7 +5,7 @@ generate:
 .PHONY: parser
 parser:
 	goyacc -o /dev/null sass/parser/parser.y
-	goyacc -o sass/parser/parser.go sass/parser/parser.y 2>&1
+	goyacc -o sass/parser/parse_yy.go sass/parser/parser.y 2>&1
 
 .PHONY: release
 release:
