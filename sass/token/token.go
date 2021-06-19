@@ -91,6 +91,7 @@ const (
 	RBRACE    // }
 	SEMICOLON // ;
 	COLON     // :
+	AT        // @
 	operator_end
 
 	keyword_beg
@@ -118,7 +119,6 @@ const (
 	RETURN  // @return
 	FROM    // from
 	THROUGH // through
-
 	keyword_end
 )
 
@@ -190,24 +190,25 @@ var tokens = [...]string{
 	RBRACE:    "}",
 	SEMICOLON: ";",
 	COLON:     ":",
+	AT:        "@",
 
-	USE:      "@use",
-	FORWARD:  "@forward",
-	IMPORT:   "@import",
-	FUNCTION: "@function",
-	EACH:     "@each",
+	USE:      "use",
+	FORWARD:  "forward",
+	IMPORT:   "import",
+	FUNCTION: "function",
+	EACH:     "each",
 
-	RETURN: "@return",
-	FOR:    "@for",
+	RETURN: "return",
+	FOR:    "for",
 	FROM:   "from",
-	MIXIN:  "@mixin",
+	MIXIN:  "mixin",
 
-	IF:      "@if",
-	ELSE:    "",
-	INCLUDE: "@include",
-	EXTEND:  "@extend",
-	DEBUG:   "@error",
-	ERROR:   "@debug",
+	IF:      "if",
+	ELSE:    "else",
+	INCLUDE: "include",
+	EXTEND:  "extend",
+	DEBUG:   "error",
+	ERROR:   "debug",
 }
 
 // String returns the string corresponding to the token tok.
@@ -243,8 +244,8 @@ const (
 // operator op. If op is not a binary operator, the result
 // is LowestPrecedence.
 //
-func (op Token) Precedence() int {
-	switch op {
+func (tok Token) Precedence() int {
+	switch tok {
 	case LOR:
 		return 1
 	case LAND:
@@ -271,7 +272,7 @@ func init() {
 // Lookup maps an identifier to its keyword token or IDENT (if not a keyword).
 //
 func Lookup(ident string) Token {
-	if tok, is_keyword := keywords[ident]; is_keyword {
+	if tok, isKeyword := keywords[ident]; isKeyword {
 		return tok
 	}
 	return IDENT

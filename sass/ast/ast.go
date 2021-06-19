@@ -649,17 +649,6 @@ type (
 		Rhs    []Expr
 	}
 
-	// A GoStmt node represents a go statement.
-	GoStmt struct {
-		Go   token.Pos // position of "go" keyword
-		Call *CallExpr
-	}
-
-	// A DeferStmt node represents a defer statement.
-	DeferStmt struct {
-		Defer token.Pos // position of "defer" keyword
-		Call  *CallExpr
-	}
 
 	// A ReturnStmt node represents a return statement.
 	ReturnStmt struct {
@@ -760,8 +749,6 @@ func (s *ExprStmt) Pos() token.Pos       { return s.X.Pos() }
 func (s *SendStmt) Pos() token.Pos       { return s.Chan.Pos() }
 func (s *IncDecStmt) Pos() token.Pos     { return s.X.Pos() }
 func (s *AssignStmt) Pos() token.Pos     { return s.Lhs[0].Pos() }
-func (s *GoStmt) Pos() token.Pos         { return s.Go }
-func (s *DeferStmt) Pos() token.Pos      { return s.Defer }
 func (s *ReturnStmt) Pos() token.Pos     { return s.Return }
 func (s *BranchStmt) Pos() token.Pos     { return s.TokPos }
 func (s *BlockStmt) Pos() token.Pos      { return s.Lbrace }
@@ -789,8 +776,6 @@ func (s *IncDecStmt) End() token.Pos {
 	return s.TokPos + 2 /* len("++") */
 }
 func (s *AssignStmt) End() token.Pos { return s.Rhs[len(s.Rhs)-1].End() }
-func (s *GoStmt) End() token.Pos     { return s.Call.End() }
-func (s *DeferStmt) End() token.Pos  { return s.Call.End() }
 func (s *ReturnStmt) End() token.Pos {
 	if n := len(s.Results); n > 0 {
 		return s.Results[n-1].End()
@@ -847,8 +832,6 @@ func (*ExprStmt) stmtNode()       {}
 func (*SendStmt) stmtNode()       {}
 func (*IncDecStmt) stmtNode()     {}
 func (*AssignStmt) stmtNode()     {}
-func (*GoStmt) stmtNode()         {}
-func (*DeferStmt) stmtNode()      {}
 func (*ReturnStmt) stmtNode()     {}
 func (*BranchStmt) stmtNode()     {}
 func (*BlockStmt) stmtNode()      {}
