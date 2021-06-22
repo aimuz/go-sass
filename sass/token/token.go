@@ -97,26 +97,26 @@ const (
 	keyword_beg
 	// Keywords
 
-	USE     // @use
-	FORWARD // @forward
-	IMPORT  // @import
-	MIXIN   // @mixin
-	INCLUDE // @include
+	USE     // use
+	FORWARD // forward
+	IMPORT  // import
+	MIXIN   // mixin
+	INCLUDE // include
 
-	FUNCTION // @function
-	EXTEND   // @extend
-	ERROR    // @error
-	WARN     // @warn
-	DEBUG    // @debug
+	FUNCTION // function
+	EXTEND   // extend
+	ERROR    // error
+	WARN     // warn
+	DEBUG    // debug
 
-	AT_ROOT // @at-root
-	IF      // @if
-	ELSE    // @else
-	EACH    // @each
-	FOR     // @for
+	AT_ROOT // at-root
+	IF      // if
+	ELSE    // else
+	EACH    // each
+	FOR     // for
 
-	WHILE   // @while
-	RETURN  // @return
+	WHILE   // while
+	RETURN  // return
 	FROM    // from
 	THROUGH // through
 	keyword_end
@@ -192,23 +192,29 @@ var tokens = [...]string{
 	COLON:     ":",
 	AT:        "@",
 
-	USE:      "use",
-	FORWARD:  "forward",
-	IMPORT:   "import",
+
+	USE:     "use",
+	FORWARD: "forward",
+	IMPORT:  "import",
+	MIXIN:   "mixin",
+	INCLUDE: "include",
+
 	FUNCTION: "function",
-	EACH:     "each",
+	EXTEND:   "extend",
+	ERROR:    "error",
+	WARN:     "warn",
+	DEBUG:    "debug",
 
-	RETURN: "return",
-	FOR:    "for",
-	FROM:   "from",
-	MIXIN:  "mixin",
-
+	AT_ROOT: "at-root",
 	IF:      "if",
 	ELSE:    "else",
-	INCLUDE: "include",
-	EXTEND:  "extend",
-	DEBUG:   "error",
-	ERROR:   "debug",
+	EACH:    "each",
+	FOR:     "for",
+
+	WHILE:   "while",
+	RETURN:  "return",
+	FROM:    "from",
+	THROUGH: "through",
 }
 
 // String returns the string corresponding to the token tok.
