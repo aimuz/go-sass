@@ -13,7 +13,6 @@ import (
 	"bytes"
 	"fmt"
 	gotoken "go/token"
-
 	"path/filepath"
 	"strconv"
 	"unicode"
@@ -416,7 +415,7 @@ func (s *Scanner) scanNumber() (token.Token, string) {
 
 	// integer part
 	if s.ch != '.' {
-		tok = token.INT
+		tok = token.NUMBER
 		if s.ch == '0' {
 			s.next()
 			switch lower(s.ch) {
@@ -439,7 +438,7 @@ func (s *Scanner) scanNumber() (token.Token, string) {
 
 	// fractional part
 	if s.ch == '.' {
-		tok = token.FLOAT
+		tok = token.NUMBER
 		if prefix == 'o' || prefix == 'b' {
 			s.error(s.offset, "invalid radix point in "+litname(prefix))
 		}
@@ -460,7 +459,7 @@ func (s *Scanner) scanNumber() (token.Token, string) {
 			s.errorf(s.offset, "%q exponent requires hexadecimal mantissa", s.ch)
 		}
 		s.next()
-		tok = token.FLOAT
+		tok = token.NUMBER
 		if s.ch == '+' || s.ch == '-' {
 			s.next()
 		}
@@ -469,7 +468,7 @@ func (s *Scanner) scanNumber() (token.Token, string) {
 		if ds&1 == 0 {
 			s.error(s.offset, "exponent has no digits")
 		}
-	} else if prefix == 'x' && tok == token.FLOAT {
+	} else if prefix == 'x' && tok == token.NUMBER {
 		s.error(s.offset, "hexadecimal mantissa requires a 'p' exponent")
 	}
 

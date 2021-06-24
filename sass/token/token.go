@@ -27,9 +27,7 @@ const (
 	// Identifiers and basic type literals
 	// (these tokens stand for classes of literals)
 	IDENT  // main
-	INT    // 12345
-	FLOAT  // 123.45
-	IMAG   // 123.45i
+	NUMBER // 1， 1.1
 	CHAR   // 'a'
 	STRING // "abc"
 	literal_end
@@ -129,9 +127,7 @@ var tokens = [...]string{
 	COMMENT: "COMMENT",
 
 	IDENT:  "IDENT",
-	INT:    "INT",
-	FLOAT:  "FLOAT",
-	IMAG:   "IMAG",
+	NUMBER: "NUMBER",
 	CHAR:   "CHAR",
 	STRING: "STRING",
 
