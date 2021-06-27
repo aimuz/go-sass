@@ -1,9 +1,6 @@
 package sass
 
 import (
-	"fmt"
-	"go/ast"
-	"go/parser"
 	"testing"
 )
 
