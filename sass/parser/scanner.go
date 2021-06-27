@@ -472,22 +472,23 @@ func (s *Scanner) scanNumber() (token.Token, string) {
 		s.error(s.offset, "hexadecimal mantissa requires a 'p' exponent")
 	}
 
-	// suffix 'i'
-	if s.ch == 'i' {
-		tok = token.IMAG
-		s.next()
-	}
-
-	lit := string(s.src[offs:s.offset])
-	if tok == token.INT && invalid >= 0 {
-		s.errorf(invalid, "invalid digit %q in %s", lit[invalid-offs], litname(prefix))
-	}
-	if digsep&2 != 0 {
-		if i := invalidSep(lit); i >= 0 {
-			s.error(offs+i, "'_' must separate successive digits")
-		}
-	}
-
+	//// suffix 'i'
+	//if s.ch == 'i' {
+	//	tok = token.IMAG
+	//	s.next()
+	//}
+	//
+	//lit := string(s.src[offs:s.offset])
+	//if tok == token.INT && invalid >= 0 {
+	//	s.errorf(invalid, "invalid digit %q in %s", lit[invalid-offs], litname(prefix))
+	//}
+	//if digsep&2 != 0 {
+	//	if i := invalidSep(lit); i >= 0 {
+	//		s.error(offs+i, "'_' must separate successive digits")
+	//	}
+	//}
+	lit := ""
+	_ = offs
 	return tok, lit
 }
 

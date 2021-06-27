@@ -90,6 +90,8 @@ const (
 	SEMICOLON // ;
 	COLON     // :
 	AT        // @
+	DOLLAR    // $
+	SPACE
 	operator_end
 
 	keyword_beg
@@ -186,7 +188,10 @@ var tokens = [...]string{
 	RBRACE:    "}",
 	SEMICOLON: ";",
 	COLON:     ":",
+
 	AT:        "@",
+	DOLLAR:    "$",
+	SPACE:     " ",
 
 
 	USE:     "use",
