@@ -72,10 +72,6 @@ func (s *Lexer) scanIdentifier2() string {
 	return string(s.src[offs:s.offset])
 }
 
-func (s Lexer) scanSpace() string {
-
-}
-
 // Scan ...
 // $roboto-font-path: "../fonts/roboto";
 // return token.$ token.IDENT token.COLON token.Space token.
