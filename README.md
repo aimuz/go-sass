@@ -62,6 +62,8 @@ brew install go-sass
 - [ ] CSS Parser
 - [ ] SCSS Parser
 - [ ] SASS Parser
+- [ ] WASM - NPM Package
+- [ ] tinygo  
 - [ ] Built in functions
     - [ ] xxx
     - [ ] ...
