@@ -3,6 +3,7 @@ package parser
 import (
 	"github.com/aimuz/go-sass/sass/token"
 	gotoken "go/token"
+	"unicode"
 	"unicode/utf8"
 )
 
@@ -50,7 +51,15 @@ func (s *Lexer) next() {
 
 func (s *Lexer) scanNumber() string {
 	offs := s.offset
-	for isDecimal(s.ch) || s.ch == '.' {
+	for isDigit(s.ch) || s.ch == '.' {
+		s.next()
+	}
+	return string(s.src[offs:s.offset])
+}
+
+func (s *Lexer) scanWhiteSpace() string {
+	offs := s.offset
+	for isWhiteSpace(s.ch) {
 		s.next()
 	}
 	return string(s.src[offs:s.offset])
@@ -64,46 +73,74 @@ func (s *Lexer) scanIdentifier() string {
 	return string(s.src[offs:s.offset])
 }
 
-func (s *Lexer) scanIdentifier2() string {
-	offs := s.offset
-	for isLetter(s.ch) || isDigit(s.ch) || s.ch == '-' {
-		s.next()
-	}
-	return string(s.src[offs:s.offset])
-}
-
 // Scan ...
-// $roboto-font-path: "../fonts/roboto";
 // return token.$ token.IDENT token.COLON token.Space token.
 func (s *Lexer) Scan() (pos gotoken.Pos, tok token.Token, lit string) {
 	// TODO: implementation
 
+	// current token start
+	pos = gotoken.NoPos
+
 	ch := s.ch
 	switch {
+	case isWhiteSpace(ch):
+		tok = token.WHITE_SPACE
+		lit = s.scanWhiteSpace()
 	case isLetter(ch):
-		tok = token.IDENT
-		if s.peek() == '@' {
-			lit = s.scanIdentifier2()
-			if len(lit) > 1 {
-				tok = token.Lookup(lit)
-			}
-		} else {
-			lit = s.scanIdentifier()
-		}
-	case isDecimal(ch) || ch == '.':
-		// .10
-		// 10.10
-		tok = token.NUMBER
-		lit = s.scanNumber()
+
+	case isDigit(ch):
+
 	default:
+		s.next() // always make progress
 		switch ch {
+		case '"':
+			tok = token.STRING
+			// TODO: string
+		case '#':
+			if isLetter(s.ch) || isDigit(s.ch) {
+				tok = token.HASH
+				lit = s.scanIdentifier()
+			}
+
+		case '\'':
+		case '(':
+		case ')':
+		case '+':
+		case ',':
+		case '-':
+		case '.':
+		case '/':
+		case ':':
+		case ';':
+		case '<':
 		case '@':
-			tok = token.AT
-		case '$':
-			tok = token.DOLLAR
-		case ' ':
-			tok = token.SPACE
+			tok = token.AT_KEYWORD
+		case '[':
+		case '\\':
+		case ']':
+		case '{':
+		case '}':
+			tok = token.ILLEGAL
+			lit = string(ch)
 		}
 	}
 	return
+}
+
+func isDigit(ch rune) bool {
+	return '0' <= ch && ch <= '9'
+}
+
+func lower(ch rune) rune { return ('a' - 'A') | ch }
+
+// letter
+// An uppercase letter or a lowercase letter.
+func isLetter(ch rune) bool {
+	return 'a' <= lower(ch) && lower(ch) <= 'z' || ch >= utf8.RuneSelf && unicode.IsLetter(ch)
+}
+
+// whitespace
+// A newline, U+0009 CHARACTER TABULATION, or U+0020 SPACE.
+func isWhiteSpace(ch rune) bool {
+	return ch == ' ' || ch == '\n' || ch == '\t'
 }
