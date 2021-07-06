@@ -57,9 +57,17 @@ Provides the same API as dart sass
 brew install go-sass
 ```
 
-- [ ] TODO
+## TODO
 
+- [ ] CSS Parser
+- [ ] SCSS Parser
+- [ ] SASS Parser
+- [ ] Built in functions
+    - [ ] xxx
+    - [ ] ...
+- [ ] Compress
+    - [ ] Minimum color value
 
 ## Acknowledgments
 
- - Thanks，[csstree](https://github.com/csstree/csstree) Provide ast reference
+- Thanks，[csstree](https://github.com/csstree/csstree) Provide ast reference
