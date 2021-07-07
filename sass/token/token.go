@@ -7,6 +7,8 @@
 //
 package token
 
+import "strconv"
+
 // Token is the set of lexical tokens of the Go programming language.
 type Token int
 
@@ -19,24 +21,51 @@ const (
 	AT_KEYWORD
 	HASH
 	STRING
-	BAD_STRING
-	URL
-	BADURL
 	DELIM
 	NUMBER
 	PERCENTAGE
 	DIMENSION
-	WHITE_SPACE
-	CDO
-	CDC
-	COLON
-	SEMICOLON
-	COMMA
-	LEFT_SQUARE_BRACKET
-	RIGHT_SQUARE_BRACKET
-	LEFT_PARENTHESIS
-	RIGHT_PARENTHESIS
-	LEFT_CURLY_BRACKET
-	RIGHT_CURLY_BRACKET
+	WHITE_SPACE // SPACE
+
+	ADD // +
+	SUB // -
+	MUL // *
+	QUO // /
+	REM // %
+
+	LPAREN // (
+	LBRACK // [
+	LBRACE // {
+	COMMA  // ,
+	PERIOD // .
+
+	RPAREN    // )
+	RBRACK    // ]
+	RBRACE    // }
+	SEMICOLON // ;
+	COLON     // :
+
 	COMMENT
 )
+
+var tokens = [...]string{
+	ILLEGAL:     "ILLEGAL",
+	EOF:         "EOF",
+	IDENT:       "IDENT",
+	AT_KEYWORD:  "@",
+	HASH:        "#",
+	STRING:      "STRING",
+	NUMBER:      "NUMBER",
+	WHITE_SPACE: "WHITE_SPACE",
+}
+
+func (tok Token) String() string {
+	s := ""
+	if 0 <= tok && tok < Token(len(tokens)) {
+		s = tokens[tok]
+	}
+	if s == "" {
+		s = "token(" + strconv.Itoa(int(tok)) + ")"
+	}
+	return s
+}

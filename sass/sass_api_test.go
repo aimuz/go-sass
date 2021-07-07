@@ -1,12 +1,22 @@
 package sass
 
 import (
+	"go/ast"
+	"go/parser"
 	"testing"
 )
 
 // The test case is from dart:
 // https://github.com/sass/dart-sass/blob/master/test/dart_api_test.dart
 func TestAPI(t *testing.T) {
+	a, err := parser.ParseExpr(`"aaaa`)
+	if err != nil {
+		t.Fatal(err)
+		return
+	}
+	ast.Print(nil, a)
+	t.Skip()
+
 	t.Run("importers", func(t *testing.T) {
 		t.Run("is used to resolve imports", func(t *testing.T) {
 		})

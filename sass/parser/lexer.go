@@ -1,20 +1,27 @@
 package parser
 
 import (
+	"fmt"
 	"github.com/aimuz/go-sass/sass/token"
 	gotoken "go/token"
 	"unicode"
 	"unicode/utf8"
 )
 
-type Lexer struct {
-	src []byte // source
+type ErrorHandler func(pos gotoken.Position, msg string)
 
+type Lexer struct {
+	src        []byte // source
+	file       *gotoken.File
+	err        ErrorHandler // error reporting; or nil
+	ErrorCount int
 	// scanning state
 	ch       rune
 	offset   int
 	rdOffset int // reading offset (position after current character)
 }
+
+const bom = 0xFEFF // byte order mark, only permitted as very first character
 
 // peek returns the byte following the most recently read character without
 // advancing the scanner. If the scanner is at EOF, peek returns 0.
@@ -49,6 +56,14 @@ func (s *Lexer) next() {
 	}
 }
 
+func (s *Lexer) error(offs int, msg string) {
+	if s.err != nil {
+		// s.err(s.file.Position(s.file.Pos(offs)), msg)
+		// TODO:
+	}
+	s.ErrorCount++
+}
+
 func (s *Lexer) scanNumber() string {
 	offs := s.offset
 	for isDigit(s.ch) || s.ch == '.' {
@@ -66,21 +81,52 @@ func (s *Lexer) scanWhiteSpace() string {
 }
 
 func (s *Lexer) scanIdentifier() string {
-	offs := s.offset
+	offs := s.offset - 1
 	for isLetter(s.ch) || isDigit(s.ch) {
 		s.next()
 	}
 	return string(s.src[offs:s.offset])
 }
 
+func (s *Lexer) scanString(quote rune) string {
+	offs := s.offset - 1
+	for {
+		ch := s.ch
+		if ch == '\n' || ch == -1 {
+			s.error(offs, "rune literal not terminated")
+			break
+		}
+		s.next()
+		if s.ch == quote {
+			s.next()
+			break
+		}
+	}
+	return string(s.src[offs:s.offset])
+}
+
+func (s *Lexer) Init(file *gotoken.File, src []byte, err ErrorHandler) {
+	// Explicitly initialize all fields since a scanner may be reused.
+	if file.Size() != len(src) {
+		panic(fmt.Sprintf("file size (%d) does not match src len (%d)", file.Size(), len(src)))
+	}
+	s.file = file
+	s.src = src
+	s.err = err
+
+	s.offset = 0
+	s.rdOffset = 0
+
+	s.next()
+	if s.ch == bom {
+		s.next() // ignore BOM at file beginning
+	}
+}
+
 // Scan ...
 // return token.$ token.IDENT token.COLON token.Space token.
 func (s *Lexer) Scan() (pos gotoken.Pos, tok token.Token, lit string) {
-	// TODO: implementation
-
-	// current token start
-	pos = gotoken.NoPos
-
+	pos = s.file.Pos(s.offset)
 	ch := s.ch
 	switch {
 	case isWhiteSpace(ch):
@@ -93,23 +139,33 @@ func (s *Lexer) Scan() (pos gotoken.Pos, tok token.Token, lit string) {
 	default:
 		s.next() // always make progress
 		switch ch {
+		case -1:
+			tok = token.EOF
 		case '"':
 			tok = token.STRING
-			// TODO: string
+			lit = s.scanString('"')
 		case '#':
+			tok = token.HASH
 			if isLetter(s.ch) || isDigit(s.ch) {
-				tok = token.HASH
 				lit = s.scanIdentifier()
 			}
-
 		case '\'':
+			tok = token.STRING
+			lit = s.scanString('\'')
 		case '(':
+			tok = token.LPAREN
 		case ')':
+			tok = token.RPAREN
 		case '+':
+			tok = token.ADD
 		case ',':
+			tok = token.COMMA
 		case '-':
+			tok = token.SUB
 		case '.':
+			tok = token.PERIOD
 		case '/':
+
 		case ':':
 		case ';':
 		case '<':
