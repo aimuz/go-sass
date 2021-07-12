@@ -7,7 +7,6 @@ import (
 )
 
 func ExampleScanner_Scan() {
-
 	// src is the input that we want to tokenize.
 	src := []byte(`#aaaaa "aaaa" #aaaa`)
 

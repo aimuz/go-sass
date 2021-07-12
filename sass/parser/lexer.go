@@ -82,10 +82,67 @@ func (s *Lexer) scanWhiteSpace() string {
 
 func (s *Lexer) scanIdentifier() string {
 	offs := s.offset - 1
-	for isLetter(s.ch) || isDigit(s.ch) {
+	for isHexDigit(s.ch) {
 		s.next()
 	}
 	return string(s.src[offs:s.offset])
+}
+
+// scanEscape parses an escape sequence where rune is the accepted
+// escaped quote. In case of a syntax error, it stops at the offending
+// character (without consuming it) and returns false. Otherwise
+// it returns true.
+func (s *Lexer) scanEscape(quote rune) bool {
+	offs := s.offset
+
+	var n int
+	var base, max uint32
+	switch s.ch {
+	case 'a', 'b', 'f', 'n', 'r', 't', 'v', '\\', quote:
+		s.next()
+		return true
+	case '0', '1', '2', '3', '4', '5', '6', '7':
+		n, base, max = 3, 8, 255
+	case 'x':
+		s.next()
+		n, base, max = 2, 16, 255
+	case 'u':
+		s.next()
+		n, base, max = 4, 16, unicode.MaxRune
+	case 'U':
+		s.next()
+		n, base, max = 8, 16, unicode.MaxRune
+	default:
+		msg := "unknown escape sequence"
+		if s.ch < 0 {
+			msg = "escape sequence not terminated"
+		}
+		s.error(offs, msg)
+		return false
+	}
+
+	var x uint32
+	for n > 0 {
+		d := uint32(digitVal(s.ch))
+		if d >= base {
+			msg := fmt.Sprintf("illegal character %#U in escape sequence", s.ch)
+			if s.ch < 0 {
+				msg = "escape sequence not terminated"
+			}
+			s.error(s.offset, msg)
+			return false
+		}
+		x = x*base + d
+		s.next()
+		n--
+	}
+
+	if x > max || 0xD800 <= x && x < 0xE000 {
+		s.error(offs, "escape sequence is invalid Unicode code point")
+		return false
+	}
+
+	return true
 }
 
 func (s *Lexer) scanString(quote rune) string {
@@ -189,14 +246,32 @@ func isDigit(ch rune) bool {
 
 func lower(ch rune) rune { return ('a' - 'A') | ch }
 
+func digitVal(ch rune) int {
+	switch {
+	case '0' <= ch && ch <= '9':
+		return int(ch - '0')
+	case 'a' <= lower(ch) && lower(ch) <= 'f':
+		return int(lower(ch) - 'a' + 10)
+	}
+	return 16 // larger than any legal digit val
+}
+
 // letter
 // An uppercase letter or a lowercase letter.
 func isLetter(ch rune) bool {
 	return 'a' <= lower(ch) && lower(ch) <= 'z' || ch >= utf8.RuneSelf && unicode.IsLetter(ch)
 }
 
+func isNewline(ch rune) bool {
+	return ch == '\n' || ch == '\r' || ch == '\f'
+}
+
 // whitespace
 // A newline, U+0009 CHARACTER TABULATION, or U+0020 SPACE.
 func isWhiteSpace(ch rune) bool {
-	return ch == ' ' || ch == '\n' || ch == '\t'
+	return ch == ' ' || ch == '\t' || isNewline(ch)
+}
+
+func isHexDigit(ch rune) bool {
+	return isDigit(ch) || isLetter(ch)
 }
