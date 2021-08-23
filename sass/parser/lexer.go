@@ -45,7 +45,7 @@ func (s *Lexer) next() {
 		case r > utf8.RuneSelf:
 			r, w = utf8.DecodeRune(s.src[s.rdOffset:])
 			if r == utf8.RuneError && w == 1 {
-				// error
+				// TODO error
 			}
 		}
 		s.rdOffset += w
@@ -190,9 +190,11 @@ func (s *Lexer) Scan() (pos gotoken.Pos, tok token.Token, lit string) {
 		tok = token.WHITE_SPACE
 		lit = s.scanWhiteSpace()
 	case isLetter(ch):
-
+		tok = token.IDENT
+		lit = s.scanIdentifier()
 	case isDigit(ch):
-
+		tok = token.NUMBER
+		lit = s.scanNumber()
 	default:
 		s.next() // always make progress
 		switch ch {
@@ -222,19 +224,25 @@ func (s *Lexer) Scan() (pos gotoken.Pos, tok token.Token, lit string) {
 		case '.':
 			tok = token.PERIOD
 		case '/':
-
+			//scanner.Float
 		case ':':
+			tok = token.COLON
 		case ';':
+			tok = token.SEMICOLON
 		case '<':
 		case '@':
 			tok = token.AT_KEYWORD
 		case '[':
+			tok = token.LBRACK
 		case '\\':
 		case ']':
+			tok = token.RBRACK
 		case '{':
+			tok = token.LBRACE
 		case '}':
-			tok = token.ILLEGAL
-			lit = string(ch)
+			tok = token.RBRACE
+		default:
+
 		}
 	}
 	return

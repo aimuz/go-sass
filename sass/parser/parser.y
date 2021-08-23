@@ -2,98 +2,120 @@
 package parser
 
 import (
-    "fmt"
+    "github.com/aimuz/go-sass/sass/ast"
 )
 %}
 
+%union {
+	offset int // offset
+	item interface{}
+	token string
+}
 
 %token <token>
-	ILLEGAL "ILLEGAL"
-	EOF "EOF"
-	COMMENT "COMMENT"
-	// Identifiers and basic type literals
-	// (these tokens stand for classes of literals)
-	IDENT  "IDENT"// main
-	INT "INT" // 12345
-	FLOAT  "FLOAT"// 123.45
-	IMAG "IMAG" // 123.45i
-	CHAR "CHAR"  // 'a'
-	STRING "STRING" // "abc"
+	IDENT
+	HASH
+	STRING
+	NUMBER
+	WHITESPACE
 
-	// Operators and delimiters
-	ADD "ADD" // +
-	SUB "SUB" // -
-	MUL "MUL" // *
-	QUO "QUO" // /
-	REM "REM" // %
+	ADD
+	SUB
+	MUL
+	QUO
+	REM
 
-	AND "AND" // &
-	OR "OR"   // |
-	XOR "XOR" // ^
+	LPAREN
+	LBRACK
+	LBRACE
+	COMMA
+	PERIOD
 
-	ADD_ASSIGN "ADD_ASSIGN" // +=
-	SUB_ASSIGN "SUB_ASSIGN" // -=
-	MUL_ASSIGN "MUL_ASSIGN" // *=
-	QUO_ASSIGN "QUO_ASSIGN" // /=
-	REM_ASSIGN "REM_ASSIGN" // %=
+	RPAREN
+	RBRACK
+	RBRACE
+	SEMICOLON
+	COLON
+%%
+Ident:
+	IDENT {
+		$$ = ast.Ident{
+			Name: $1,
+		}
+	}
+	;
+Field: 
+	STRING
+	;
+Function:
+	IDENT LPAREN STRING RPAREN {
 
-	AND_ASSIGN "AND_ASSIGN" // &=
-	OR_ASSIGN "OR_ASSIGN" // |=
-	XOR_ASSIGN "XOR_ASSIGN" // ^=
-	SHL_ASSIGN "SHL_ASSIGN" // <<=
-	SHR_ASSIGN "SHR_ASSIGN" // >>=
-	AND_NOT_ASSIGN "AND_NOT_ASSIGN" // &^=
+	}
+	| IDENT LPAREN IDENT RPAREN {
 
-	LAND  "LAND" // &&
-	LOR   "LOR"  // ||
-	ARROW "ARROW"// <-
-	INC "INC" // ++
-	DEC "DEC" // --
+	}
+	;
+SelectorClass: PERIOD IDENT {
 
-	EQL "EQL" // ==
-	LSS "LSS" // <
-	GTR "GTR" // >
-	ASSIGN // =
-	NOT    // !
+	}
+	;
+SelectorID: HASH {
 
-	NEQ      // !=
-	LEQ      // <=
-	GEQ      // >=
-	DEFINE   // :=
-	ELLIPSIS // ...
+	}
+	;
+SelectorAll: MUL {
 
-	LPAREN // (
-	LBRACK // [
-	LBRACE // {
-	COMMA  // ,
-	PERIOD // .
+	}
+	;
+SelectorAttribute: LBRACK IDENT RBRACK
+	| LBRACK IDENT '=' IDENT RBRACK
+	{
 
-	RPAREN    // )
-	RBRACK    // ]
-	RBRACE    // }
-	SEMICOLON // ;
-	COLON     // :
-	operator_end
+	}
+	| LBRACK IDENT '|' '=' IDENT RBRACK
+	{
 
-	keyword_beg
-	// Keywords
+	}
+	| LBRACK IDENT '~' '=' IDENT RBRACK
+	{
 
-	USE      // @use
-	FORWARD  // @forward
-	IMPORT   // @import
-	FUNCTION // @function
-	EACH     // @each
+	}
+	| LBRACK IDENT '^' '=' IDENT RBRACK
+	{
 
-	RETURN  // @return
-	FOR     // @for
-	FROM    // from
-	THROUGH // through
-	IF      // @if
+	}
+	| LBRACK IDENT '$' '=' IDENT RBRACK
+	{
 
-	ELSE    // @else
-	MIXIN   // @mixin
-	INCLUDE // @include
-	EXTEND  // @extend
-	DEBUG   // @debug
+	}
+	| LBRACK IDENT '*' '=' IDENT RBRACK
+	{
+	
+	}
+	;
+Selector: SelectorClass {
 
-	ERROR // @error
+	}
+	| SelectorID {
+
+	}
+	| SelectorAll {
+
+	}
+	| SelectorAttribute {
+
+	}
+	;
+SelectorList:
+	Selector {
+		$$ = ast.SelectorList{
+
+		}
+	}
+	| SelectorList ',' Selector {
+
+	}
+	;
+selector:
+
+%%

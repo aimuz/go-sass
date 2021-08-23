@@ -49,6 +49,8 @@ const (
 )
 
 var tokens = [...]string{
+	PERIOD:      ".",
+
 	ILLEGAL:     "ILLEGAL",
 	EOF:         "EOF",
 	IDENT:       "IDENT",
